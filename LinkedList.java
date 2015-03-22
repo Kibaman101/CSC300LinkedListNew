@@ -105,14 +105,79 @@ public class LinkedList
 			}
 			currNode.setNextNode(n);
 		}
-		this.count++;
+		this.count--;
 	}
-	
-	public int removeFront()
+	public int removeAtIndex(int index) throws Exception
 	{
+		if(head == null)
+		{
+			throw new Exception("Can Not Remove At Index: Empty List");
+		}
+		else if(index < 0 || index > this.count-1)
+		{
+			throw new Exception("Can Not Remove At Index: Index Out of Bounds : " + index);
+			
+		}
+		else
+		{
+			if(index == 0)
+			{
+				return this.removeFront();
+			}
+			else if(index == this.count-1)
+			{
+				return this.removeEnd();
+			}
+			else
+			{
+				Node currNode = head;
+				for(int i = 1; i < index; i++)
+				{
+					currNode = currNode.getNextNode();
+				}
+				int payloadToReturn = currNode.getNextNode().getPayload();
+				Node temp = currNode.getNextNode().getNextNode();
+				currNode.getNextNode().setNextNode(null);
+				currNode.setNextNode(temp);
+				return payloadToReturn;
+			}
+		}
+	}
+	public int removeEnd() throws Exception
+	{
+		if(head == null)
+		{
+			throw new Exception("Can Not Remove Front: Empty List");
+		}
+		else if(this.count == 1)
+		{
+			return this.removeFront();
+		}
+		else
+		{
+			Node currNode = head;
+			for(int i = 0; i < this.count-2; i++)
+			{
+				currNode = currNode.getNextNode();
+			}
+			int payloadToReturn = currNode.getNextNode().getPayload();
+			currNode.setNextNode(null);
+			this.count--;
+			return payloadToReturn;
+			
+		}
+	}
+	public int removeFront() throws Exception
+	{
+		if(head == null)
+		{
+			throw new Exception("Can Not Remove Front: Empty List");
+		}
+
 		Node currNode = head;
 		head = head.getNextNode();
 		currNode.setNextNode(null);
+		this.count--;
 		return currNode.getPayload();
 		
 	}
