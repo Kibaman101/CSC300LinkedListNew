@@ -3,10 +3,12 @@ public class LinkedList
 {
 	private Node head;
 	private int count;
+	private Node tail;
 	
 	public LinkedList()
 	{
 		this.head = null;
+		this.tail = null;
 		this.count = 0;
 	}
 	
@@ -31,6 +33,16 @@ public class LinkedList
 	public int count()
 	{
 		return this.count;
+	}
+	public void displayInReverse()
+	{
+		Node currNode = tail;
+		while(currNode.getPrevNode() != null)
+		{
+			System.out.print(currNode.getPayload() + "->");
+			currNode = currNode.getPrevNode();
+		}
+		System.out.println(currNode.getPayload() + "-> null");
 	}
 	
 	public void display()
@@ -65,12 +77,14 @@ public class LinkedList
 		{
 			Node n = new Node(payload);
 			Node curr = head;
-			for(int i = 0; i < index-1; i++)
+			for(int i = 0; i < index; i++)
 			{
 				curr = curr.getNextNode();
 			}
 			n.setNextNode(curr.getNextNode());
-			curr.setNextNode(n);
+			n.setPrevNode(curr.getPrevNode());
+			curr.setPrevNode(n);
+			n.getPrevNode().setNextNode(n);
 			this.count++;
 		}
 		
@@ -81,10 +95,12 @@ public class LinkedList
 		if(head == null)
 		{
 			head = n;
+			tail = n;
 		}
 		else
 		{
 			n.setNextNode(head);
+			head.setPrevNode(n);
 			head = n;
 		}
 		this.count++;
@@ -95,15 +111,13 @@ public class LinkedList
 		if(this.head == null)
 		{
 			this.head = n;
+			this.tail = n;
 		}
 		else
 		{
-			Node currNode = this.head;
-			while(currNode.getNextNode() != null)
-			{
-				currNode = currNode.getNextNode();
-			}
-			currNode.setNextNode(n);
+			tail.setNextNode(n);
+			n.setPrevNode(tail);
+			tail = n;
 		}
 		this.count--;
 	}
@@ -131,15 +145,16 @@ public class LinkedList
 			else
 			{
 				Node currNode = head;
-				for(int i = 1; i < index; i++)
+				for(int i = 0; i < index; i++)
 				{
 					currNode = currNode.getNextNode();
 				}
-				int payloadToReturn = currNode.getNextNode().getPayload();
-				Node temp = currNode.getNextNode().getNextNode();
-				currNode.getNextNode().setNextNode(null);
-				currNode.setNextNode(temp);
-				return payloadToReturn;
+				currNode.getPrevNode().setNextNode(currNode.getNextNode());
+				currNode.getNextNode().setPrevNode(currNode.getPrevNode());
+				currNode.setNextNode(null);
+				currNode.setPrevNode(null);
+				this.count--;
+				return currNode.getPayload();
 			}
 		}
 	}
@@ -155,16 +170,12 @@ public class LinkedList
 		}
 		else
 		{
-			Node currNode = head;
-			for(int i = 0; i < this.count-2; i++)
-			{
-				currNode = currNode.getNextNode();
-			}
-			int payloadToReturn = currNode.getNextNode().getPayload();
-			currNode.setNextNode(null);
+			Node curr = tail;
+			tail = curr.getPrevNode();
+			curr.setPrevNode(null);
+			tail.setNextNode(null);
 			this.count--;
-			return payloadToReturn;
-			
+			return curr.getPayload();
 		}
 	}
 	public int removeFront() throws Exception
@@ -173,12 +184,22 @@ public class LinkedList
 		{
 			throw new Exception("Can Not Remove Front: Empty List");
 		}
-
-		Node currNode = head;
-		head = head.getNextNode();
-		currNode.setNextNode(null);
-		this.count--;
-		return currNode.getPayload();
-		
+		else if(this.count == 1)
+		{
+			int payloadToReturn = this.head.getPayload();
+			this.head = null;
+			this.tail = null;
+			this.count = 0;
+			return payloadToReturn;
+		}
+		else
+		{
+			Node curr = head;
+			curr.getNextNode().setPrevNode(null);
+			head = curr.getNextNode();
+			curr.setNextNode(null);
+			this.count--;
+			return curr.getPayload();
+		}
 	}
 }

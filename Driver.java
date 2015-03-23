@@ -13,7 +13,15 @@ public class Driver
 		ll.addFront(6);
 		ll.addFront(7);
 		ll.display();
-		ll.removeAtIndex(-13);
+		ll.displayInReverse();
 		ll.display();
+		ll.removeFront();
+		ll.display();
+		ll.removeEnd();
+		ll.display();
+		ll.removeAtIndex(2);
+		ll.display();
+		ll.addAtIndex(13, 2);
+		ll.displayInReverse();
 	}
 }
